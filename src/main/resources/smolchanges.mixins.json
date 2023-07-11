@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "org.pichurose.smolchanges.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "smolchanges.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
