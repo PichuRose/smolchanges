@@ -6,7 +6,8 @@
   "refmap": "smolchanges.refmap.json",
   "mixins": [
     "FishingRodItemMixin",
-    "ForgeHooksMixin"
+    "ForgeHooksMixin",
+    "BlockBehaviorMixin"
   ],
   "client": [
   ],
