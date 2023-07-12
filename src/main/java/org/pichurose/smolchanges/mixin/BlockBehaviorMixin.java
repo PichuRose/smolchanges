@@ -3,15 +3,16 @@ package org.pichurose.smolchanges.mixin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.LeavesBlock;
-import net.minecraft.world.level.block.TorchBlock;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.pichurose.smolchanges.utils.CustomShapes;
 import org.pichurose.smolchanges.utils.ResizingUtils;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -66,18 +67,46 @@ public abstract class BlockBehaviorMixin {
 
             }
             else if(isUnsolidSelectable && voxelShape!= null){
-                int pX = 0, pY = 0, pZ = 0, pX2 = 0, pY2 = 0, pZ2 = 0;
-                //noinspection ConstantValue
+                VoxelShape newShape = null;
                 if (((Object) this) instanceof TorchBlock){
-                    pX = 7;
-                    pY = 0;
-                    pZ = 7;
-                    pX2 = 9;
-                    pY2 = 10;
-                    pZ2 = 9;
+                    newShape = CustomShapes.SHORT_ROD_SHAPE;
                 }
-                VoxelShape newShape = Shapes.create(pX/16f, pY/16f, pZ/16f, pX2/16f, pY2/16f, pZ2/16f);
-                if (newShape != Shapes.create(0,0,0,0,0,0)) {
+
+                else if (((Object) this) instanceof SignBlock){
+                    if (!(((Object) this) instanceof WallSignBlock)){
+                        int rotation = pState.getValue(BlockStateProperties.ROTATION_16);
+                        switch(rotation){
+                            case 0: case 8:
+                                newShape = CustomShapes.SIGN_SHAPE;
+                                break;
+                            case 4: case 12:
+                                newShape = CustomShapes.SIGN_SHAPE_2;
+                                break;
+
+                        }
+
+
+
+
+
+
+                    }
+
+
+
+
+
+                }
+
+                else if (((Object) this) instanceof WebBlock){
+                    newShape = CustomShapes.EMPTY_SHAPE;
+                }
+
+                else if (((Object) this) instanceof SaplingBlock){
+                    newShape = CustomShapes.MEDIUM_ROD_SHAPE;
+                }
+
+                if (newShape != null) {
                     cir.setReturnValue(newShape);
                     return;
                 }
