@@ -7,7 +7,8 @@
   "mixins": [
     "FishingRodItemMixin",
     "ForgeHooksMixin",
-    "BlockBehaviorMixin"
+    "BlockBehaviorMixin",
+    "CrossCollisionBlockMixin"
   ],
   "client": [
   ],

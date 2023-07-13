@@ -40,15 +40,17 @@ public abstract class BlockBehaviorMixin {
     @Inject(at = @At("HEAD"), method = "getCollisionShape", cancellable = true)
     public void onGetCollisionShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext, CallbackInfoReturnable<VoxelShape> cir) {
         //return this.hasCollision ? pState.getShape(pLevel, pPos) : Shapes.empty();
-
         if (pContext instanceof EntityCollisionContext && ResizingUtils.getActualSize(((EntityCollisionContext) pContext).getEntity()) <=0.25) {
             @SuppressWarnings("ConstantValue") boolean isLeaves = ((Object) this) instanceof LeavesBlock;
             boolean isUnsolidSelectable = false;
             VoxelShape voxelShape = null;
-
+            VoxelShape newShape = null;
             if (!this.hasCollision){
                 voxelShape = this.getShape(pState, pLevel, pPos, pContext);
                 isUnsolidSelectable = voxelShape != Shapes.empty() &&  !voxelShape.isEmpty();
+            }
+            else{
+
             }
 
             Entity entity = ((EntityCollisionContext) pContext).getEntity();
@@ -63,11 +65,12 @@ public abstract class BlockBehaviorMixin {
                 if(topNotEmpty && ResizingUtils.getActualSize(entity) <=0.25){
 
                     cir.setReturnValue(Shapes.empty());
+                    return;
                 }
 
             }
+
             else if(isUnsolidSelectable && voxelShape!= null){
-                VoxelShape newShape = null;
                 if (((Object) this) instanceof TorchBlock){
                     newShape = CustomShapes.SHORT_ROD_SHAPE;
                 }
@@ -84,18 +87,7 @@ public abstract class BlockBehaviorMixin {
                                 break;
 
                         }
-
-
-
-
-
-
                     }
-
-
-
-
-
                 }
 
                 else if (((Object) this) instanceof WebBlock){
@@ -112,7 +104,19 @@ public abstract class BlockBehaviorMixin {
                 }
                 cir.setReturnValue(voxelShape);
             }
+            else{
 
+                if (newShape != null) {
+                    cir.setReturnValue(newShape);
+                    return;
+                }
+                if (voxelShape != null) {
+                    cir.setReturnValue(voxelShape);
+                }
+                else{
+                    return;
+                }
+            }
 
         }
         else{
